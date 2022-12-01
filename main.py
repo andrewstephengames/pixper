@@ -1,7 +1,6 @@
 import pygame
 import random
 import math
-import os
 
 from pygame import mixer
 
@@ -29,20 +28,38 @@ pygame.display.set_icon (icon)
 
 # tiles
 grassImg = pygame.image.load ("res/grass.png")
+grassTile = pygame.image.load ("res/grasstile.png").convert()
+tinyGrassTile = pygame.image.load ("res/tinyGrasstile.png").convert()
 
 # player
 
 playerImg = pygame.image.load("res/player-black.png")
 enemyImg = pygame.image.load("res/enemy-black.png")
-playerX = random.randint (0, 800)
-playerY = random.randint (0, 600)
-playerSpeed = 10
+playerX = random.randint (0, width-32)
+playerY = random.randint (0, height-32)
+playerSpeed = 3
 
 # enemy
 
-enemyX = random.randint (0, 800)
-enemyY = random.randint (0, 600)
-enemySpeed = 3
+enemyX = random.randint (0, width-32)
+enemyY = random.randint (0, height-32)
+enemySpeed = 1
+
+# obstacles
+
+#appleImg = pygame.image.load ("res/apple.png")
+appleImg = []
+#appleX = random.randint(0, width-32)
+#appleY = random.randint (0, height-32)
+appleX = []
+appleY = []
+
+appleNum = random.randint (0, 8)
+
+for i in range (appleNum):
+     appleImg.append (pygame.image.load("res/apple.png"))
+     appleX.append(random.randint (0, width-32))
+     appleY.append(random.randint (0, height-32))
 
 # sounds
 
@@ -54,12 +71,13 @@ keys = {'w': False,'a': False,'s': False,'d': False}
      
 # entities
 
+score = 0
+
 def player(x, y):
      screen.blit(playerImg, (x, y))
 def enemy(x, y):
      screen.blit(enemyImg, (x, y))
-     global playerX, playerY, enemyX, enemyY
-     global enemySpeed
+     global enemyX, enemyY, playerX, playerY, enemySpeed
      if enemyX < playerX:
           enemyX += enemySpeed
      else: enemyX -= enemySpeed
@@ -71,20 +89,46 @@ def isCollision (x1, y1, x2, y2):
      distance = math.sqrt(math.pow(x2-x1, 2) + math.pow (y2-y1, 2))
      return distance < 5
 
+
 # gameloop
 running = True
 while running:
      screen.fill ((0, 0, 0))
      #screen.blit (bgImg, (0, 0))
-     screen.blit (grassImg, (0, 0))
+     #screen.blit (grassImg, (0, 0))
+     j = 0
+     while j <= height:
+               i = 0
+               while i <= width:
+                    screen.blit (grassTile, (i, j))
+                    i += 256
+               j += 256
+     for i in range (2, appleNum):
+          screen.blit (appleImg[i], (appleX[i], appleY[i]))
+          if isCollision (playerX, playerY, appleX[i], appleY[i]):
+               if appleImg[i] != tinyGrassTile:
+                    score += 1
+                    playerSpeed += 0.25
+                    screen.blit (tinyGrassTile, (appleX[i], appleY[i]))
+                    appleImg[i] = tinyGrassTile
      for event in pygame.event.get():
           # if screen gets resized adjust window size, entity speeds          
           if event.type == pygame.VIDEORESIZE:
                width = screen.get_width()
                height = screen.get_height()
-               playerSpeed *= 2*(width/height)
-               enemySpeed *= 2*(width/height)
+               # FIXME
+               playerSpeed = 1.5*(width/height)
+               enemySpeed = 1.25*(width/height)
                #screen.blit (grassImg, (0, 0))
+               #grassTile.blit(grassTile, (0, 0))
+               j = 0
+               while j <= height:
+                    i = 0
+                    while i <= width:
+                         screen.blit (grassTile, (i, j))
+                         i += 256
+                    j += 256
+                    firstFrame = True
                pygame.display.update()
           if event.type == pygame.QUIT:
                running = False
@@ -149,4 +193,12 @@ while running:
      
      player(playerX, playerY)
      enemy (enemyX, enemyY)
+     clock = pygame.time.Clock()
+     clock.tick (75)
      pygame.display.update()
+print ("Your final score was:", playerSpeed)
+if score == 0:
+     print ("You ate no apples.")
+elif score == 1:
+     print ("You ate", score, "apple.")
+else: print ("You ate", score, "apples.")
