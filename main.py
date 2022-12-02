@@ -28,8 +28,9 @@ pygame.display.set_icon (icon)
 
 # tiles
 grassImg = pygame.image.load ("res/grass.png")
-grassTile = pygame.image.load ("res/grasstile.png").convert()
-tinyGrassTile = pygame.image.load ("res/tinyGrasstile.png").convert()
+grassTile = pygame.image.load ("res/grasstile.png")
+tinyGrassTile = pygame.image.load ("res/tinyGrasstile.png")
+bombTile = pygame.image.load ("res/bombtile.png")
 
 # player
 
@@ -38,6 +39,8 @@ enemyImg = pygame.image.load("res/enemy-black.png")
 playerX = random.randint (0, width-32)
 playerY = random.randint (0, height-32)
 playerSpeed = 3
+playerHealth = 10
+hitDelay = 20
 
 # enemy
 
@@ -53,17 +56,31 @@ appleImg = []
 #appleY = random.randint (0, height-32)
 appleX = []
 appleY = []
+appleNum = 0
 
-appleNum = random.randint (0, 8)
 
-for i in range (appleNum):
-     appleImg.append (pygame.image.load("res/apple.png"))
-     appleX.append(random.randint (0, width-32))
-     appleY.append(random.randint (0, height-32))
+grassTileImg = []
+grassTileX = []
+grassTileY = []
+grassNum = 0
+
+bombImg = []
+bombX = []
+bombY = []
+bombNum = 0
+
+# fonts
+
+healthFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 20)
+scoreFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 20)
+startFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 40)
+endFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 70)
 
 # sounds
 
 hurtSound = pygame.mixer.Sound ("res/sounds/oof.ogg")
+bombSound = pygame.mixer.Sound ("res/sounds/boom.ogg")
+eatSound = pygame.mixer.Sound ("res/sounds/eat.ogg")
 
 # handle keys
 
@@ -85,14 +102,87 @@ def enemy(x, y):
           enemyY += enemySpeed
      else: enemyY -= enemySpeed
      
-def isCollision (x1, y1, x2, y2):
+def isCollision (x1, y1, x2, y2, collide):
      distance = math.sqrt(math.pow(x2-x1, 2) + math.pow (y2-y1, 2))
-     return distance < 5
+     return distance < collide
 
+def generateApple (init):
+     global appleImg, appleX, appleY, appleNum, tinyGrassTile
+     global playerX, playerY, playerSpeed, score, width, height, playerHealth
+     if init:
+          appleNum = random.randint (8, 32)
+          for i in range (appleNum):
+               appleImg.append (pygame.image.load("res/apple.png"))
+               appleX.append(random.randint (0, width-32))
+               appleY.append(random.randint (0, height-32))
+     else:
+          for i in range (appleNum):
+               screen.blit (appleImg[i], (appleX[i], appleY[i]))
+               if isCollision (playerX, playerY, appleX[i], appleY[i], 10):
+                    if appleImg[i] != tinyGrassTile:
+                         eatSound.play()
+                         score += 1
+                         playerSpeed += 0.25
+                         screen.blit (tinyGrassTile, (appleX[i], appleY[i]))
+                         appleImg[i] = tinyGrassTile
+                         playerHealth += 1
+
+def generateGrass (init):
+     global grassNum, grassTileImg, grassTileX, grassTileY, width, height
+     if init:
+          grassNum = random.randint (8, 32)
+          for i in range (grassNum):
+               grassTileImg.append (pygame.image.load ("res/tinyGrasstile.png"))
+               grassTileX.append (random.randint (0, width-32))
+               grassTileY.append (random.randint (0, height-32))
+     else:
+          for i in range (grassNum):
+               screen.blit (grassTileImg[i], (grassTileX[i], grassTileY[i]))
+def generateBomb (init):
+     global bombNum, bombImg, bombX, bombY, width, height, playerHealth
+     global enemyX, enemyY, playerX, playerY, playerSpeed, enemySpeed
+     global bombTile
+     if init:
+          bombNum = random.randint (8, 32)
+          for i in range (bombNum):
+               bombImg.append (pygame.image.load ("res/bomb.png"))
+               bombX.append (random.randint (0, width-32))
+               bombY.append (random.randint (0, height-32))
+     else:
+          for i in range (bombNum):
+               screen.blit (bombImg[i], (bombX[i], bombY[i]))
+               if isCollision (playerX, playerY, bombX[i], bombY[i], 5):
+                    if bombImg[i] != bombTile:
+                         playerHealth -= 2
+                         playerSpeed -= 0.5
+                         screen.blit (bombTile, (bombX[i], bombY[i]))
+                         bombImg[i] = bombTile
+                         bombSound.play()
+                         hurtSound.play()
+                    else:
+                         playerX -= 32
+                         playerY -= 32
+               if isCollision (enemyX, enemyY, bombX[i], bombY[i], 10):
+                    if bombImg[i] != bombTile:
+                         enemySpeed += 0.25
+                         screen.blit (bombTile, (bombX[i], bombY[i]))
+                         bombImg[i] = bombTile
+                         bombSound.play()
+                    else:
+                         if playerX == bombX[i] and playerY == bombY[i]:
+                              playerX -= 1
+                              playerY -= 1
+     
+generateApple (True)
+generateGrass (True)
+generateBomb (True)
+
+iterationNum = 0
 
 # gameloop
 running = True
 while running:
+     iterationNum += 1
      screen.fill ((0, 0, 0))
      #screen.blit (bgImg, (0, 0))
      #screen.blit (grassImg, (0, 0))
@@ -103,22 +193,27 @@ while running:
                     screen.blit (grassTile, (i, j))
                     i += 256
                j += 256
-     for i in range (2, appleNum):
-          screen.blit (appleImg[i], (appleX[i], appleY[i]))
-          if isCollision (playerX, playerY, appleX[i], appleY[i]):
-               if appleImg[i] != tinyGrassTile:
-                    score += 1
-                    playerSpeed += 0.25
-                    screen.blit (tinyGrassTile, (appleX[i], appleY[i]))
-                    appleImg[i] = tinyGrassTile
+     generateApple(False)
+     generateGrass(False)
+     generateBomb (False)
      for event in pygame.event.get():
           # if screen gets resized adjust window size, entity speeds          
           if event.type == pygame.VIDEORESIZE:
-               width = screen.get_width()
-               height = screen.get_height()
-               # FIXME
-               playerSpeed = 1.5*(width/height)
-               enemySpeed = 1.25*(width/height)
+               newwidth = screen.get_width()
+               newheight = screen.get_height()
+               playerSpeed = 2.5*(newwidth/newheight)
+               enemySpeed = 1.5*(newwidth/newheight)
+               width = newwidth
+               height = newheight
+               #appleNum = random.randint ( (int) (width/height)*2, (int) (width/height)*32)
+               #grassNum = random.randint ( (int) (width/height)*8, (int) (width/height)*64)
+               generateApple(True)
+               generateGrass(True)
+               generateBomb(True)
+               generateApple(False)
+               generateGrass(False)
+               generateBomb (False)
+               
                #screen.blit (grassImg, (0, 0))
                #grassTile.blit(grassTile, (0, 0))
                j = 0
@@ -128,7 +223,8 @@ while running:
                          screen.blit (grassTile, (i, j))
                          i += 256
                     j += 256
-                    firstFrame = True
+               if iterationNum < 20:
+                    screen.blit (startFont.render("Gotta eat em all!", True, (0, 0, 0)), (width/8, height/2))
                pygame.display.update()
           if event.type == pygame.QUIT:
                running = False
@@ -164,7 +260,6 @@ while running:
      if keys['d']:
           playerX += playerSpeed
                     
-     # rgb
      if playerX <= 0:
           playerX = 0
      if playerX >= width-32:
@@ -183,20 +278,33 @@ while running:
           enemyY = height-32
 
      
-     # collision
-
-     collision = isCollision (playerX, playerY, enemyX, enemyY)
-     if collision:
-          print ("Player and enemy have collided!")
+     collision = isCollision (playerX, playerY, enemyX, enemyY, 5)
+     if collision and hitDelay == 0:
           hurtSound.play()
-          running = False 
+          playerHealth -= 1
+          #playerSpeed -= 0.25
+          hitDelay = 20
+     elif collision and hitDelay != 0:
+          hitDelay -= 1
+     if playerHealth <= 0:
+          screen.blit (endFont.render ("Game Over!", True, (255, 255, 255)), (width/10, height/2.5))
+          iterationNum = 0
+     elif score == appleNum:
+          screen.blit (endFont.render ("You Won!", True, (223.8, 225.7, 12.1)), (width/5, height/2.5))
+          iterationNum = 0
      
      player(playerX, playerY)
      enemy (enemyX, enemyY)
+     screen.blit (healthFont.render("Health:" + str(playerHealth), True, (255, 0, 0)), (0, 0))
+     screen.blit (scoreFont.render("Score:" + str(score), True, (0, 0, 255)), (0, 25))
+     if iterationNum < 80 and iterationNum > 0:
+          screen.blit (startFont.render("Gotta eat em all!", True, (0, 0, 0)), (width/8, height/2.5))
      clock = pygame.time.Clock()
      clock.tick (75)
      pygame.display.update()
-print ("Your final score was:", playerSpeed)
+     if iterationNum == 0:
+          pygame.time.wait(5000)
+          running = False
 if score == 0:
      print ("You ate no apples.")
 elif score == 1:
