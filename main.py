@@ -19,7 +19,7 @@ screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
 
 # set title and icon
 pygame.display.set_caption ("Pixper")
-icon = pygame.image.load("res/player.png")
+icon = pygame.image.load("res/images/player.png")
 pygame.display.set_icon (icon)
 
 # background
@@ -27,15 +27,15 @@ pygame.display.set_icon (icon)
 #bgImg = pygame.image.load("res/background.jpg")
 
 # tiles
-grassImg = pygame.image.load ("res/grass.png")
-grassTile = pygame.image.load ("res/grasstile.png")
-tinyGrassTile = pygame.image.load ("res/tinyGrasstile.png")
-bombTile = pygame.image.load ("res/bombtile.png")
+grassImg = pygame.image.load ("res/images/grass.png")
+grassTile = pygame.image.load ("res/images/grasstile.png")
+tinyGrassTile = pygame.image.load ("res/images/tinyGrasstile.png")
+bombTile = pygame.image.load ("res/images/bombtile.png")
 
 # player
 
-playerImg = pygame.image.load("res/player-black.png")
-enemyImg = pygame.image.load("res/enemy-black.png")
+playerImg = pygame.image.load("res/images/player-black.png")
+enemyImg = pygame.image.load("res/images/enemy-black.png")
 playerX = random.randint (0, width-32)
 playerY = random.randint (0, height-32)
 playerSpeed = 3
@@ -50,7 +50,6 @@ enemySpeed = 1
 
 # obstacles
 
-#appleImg = pygame.image.load ("res/apple.png")
 appleImg = []
 #appleX = random.randint(0, width-32)
 #appleY = random.randint (0, height-32)
@@ -82,6 +81,13 @@ hurtSound = pygame.mixer.Sound ("res/sounds/oof.ogg")
 bombSound = pygame.mixer.Sound ("res/sounds/boom.ogg")
 eatSound = pygame.mixer.Sound ("res/sounds/eat.ogg")
 
+# music
+
+mainMusic = pygame.mixer.music.load("res/music/mainmusic.ogg")
+
+# play music indefinitely
+pygame.mixer.music.play (-1)
+
 # handle keys
 
 keys = {'w': False,'a': False,'s': False,'d': False}
@@ -112,7 +118,7 @@ def generateApple (init):
      if init:
           appleNum = random.randint (8, 32)
           for i in range (appleNum):
-               appleImg.append (pygame.image.load("res/apple.png"))
+               appleImg.append (pygame.image.load("res/images/apple.png"))
                appleX.append(random.randint (0, width-32))
                appleY.append(random.randint (0, height-32))
      else:
@@ -132,7 +138,7 @@ def generateGrass (init):
      if init:
           grassNum = random.randint (8, 32)
           for i in range (grassNum):
-               grassTileImg.append (pygame.image.load ("res/tinyGrasstile.png"))
+               grassTileImg.append (pygame.image.load ("res/images/tinyGrasstile.png"))
                grassTileX.append (random.randint (0, width-32))
                grassTileY.append (random.randint (0, height-32))
      else:
@@ -145,7 +151,7 @@ def generateBomb (init):
      if init:
           bombNum = random.randint (8, 32)
           for i in range (bombNum):
-               bombImg.append (pygame.image.load ("res/bomb.png"))
+               bombImg.append (pygame.image.load ("res/images/bomb.png"))
                bombX.append (random.randint (0, width-32))
                bombY.append (random.randint (0, height-32))
      else:
@@ -178,6 +184,7 @@ generateGrass (True)
 generateBomb (True)
 
 iterationNum = 0
+
 
 # gameloop
 running = True
@@ -287,7 +294,7 @@ while running:
      elif collision and hitDelay != 0:
           hitDelay -= 1
      if playerHealth <= 0:
-          screen.blit (endFont.render ("Game Over!", True, (255, 255, 255)), (width/10, height/2.5))
+          screen.blit (endFont.render ("Game Over!", True, (163.6, 162.5, 162.5)), (width/10, height/2.5))
           iterationNum = 0
      elif score == appleNum:
           screen.blit (endFont.render ("You Won!", True, (223.8, 225.7, 12.1)), (width/5, height/2.5))
