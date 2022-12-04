@@ -83,6 +83,9 @@ endFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 70)
 hurtSound = pygame.mixer.Sound ("res/sounds/oof.ogg")
 bombSound = pygame.mixer.Sound ("res/sounds/boom.ogg")
 eatSound = pygame.mixer.Sound ("res/sounds/eat.ogg")
+hurtSound.set_volume(0.25)
+bombSound.set_volume(0.25)
+eatSound.set_volume(0.25)
 
 # music
 
@@ -131,6 +134,7 @@ def generateApple (init):
                if isCollision (playerX, playerY, appleX[i], appleY[i], 10):
                     if appleImg[i] != tinyGrassTile:
                          eatSound.play()
+                         eatSound.set_volume(0.1)
                          score += 1
                          playerSpeed += 0.25
                          screen.blit (tinyGrassTile, (appleX[i], appleY[i]))
@@ -168,6 +172,7 @@ def generateBomb (init):
                          screen.blit (bombTile, (bombX[i], bombY[i]))
                          bombImg[i] = bombTile
                          bombSound.play()
+                         bombSound.set_volume(0.1)
                          hurtSound.play()
                     else:
                          playerX -= 32
@@ -178,13 +183,14 @@ def generateBomb (init):
                          screen.blit (bombTile, (bombX[i], bombY[i]))
                          bombImg[i] = bombTile
                          bombSound.play()
+                         bombSound.set_volume(0.1)
                     else:
                          if playerX == bombX[i] and playerY == bombY[i]:
                               playerX -= 1
                               playerY -= 1
 
 def generateTree (init):
-     global TreeImg, treeX, treeY, treeNum, playerX, playerY
+     global treeImg, treeX, treeY, treeNum, playerX, playerY
      if init:
           treeNum = random.randint (16, 64)
           for i in range (treeNum):
@@ -310,6 +316,7 @@ while running:
      collision = isCollision (playerX, playerY, enemyX, enemyY, 5)
      if collision and hitDelay == 0:
           hurtSound.play()
+          hurtSound.set_volume(0.1)
           playerHealth -= 3
           #playerSpeed -= 0.25
           hitDelay = 20
