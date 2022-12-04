@@ -201,149 +201,151 @@ def generateTree (init):
           for i in range (treeNum):
                screen.blit (treeImg[i], (treeX[i], treeY[i]))
           
-     
-
 generateBomb (True)
 generateApple (True)
 generateGrass (True)
 generateTree(True)
 
-iterationNum = 0
 
-
-# gameloop
-running = True
-while running:
-     iterationNum += 1
-     screen.fill ((0, 0, 0))
-     #screen.blit (bgImg, (0, 0))
-     #screen.blit (grassImg, (0, 0))
-     j = 0
-     while j <= height:
-               i = 0
-               while i <= width:
-                    screen.blit (grassTile, (i, j))
-                    i += 256
-               j += 256
-     generateApple(False)
-     generateGrass(False)
-     generateBomb (False)
-     generateTree(False)
-     for event in pygame.event.get():
-          # if screen gets resized adjust window size, entity speeds          
-          if event.type == pygame.VIDEORESIZE:
-               newwidth = screen.get_width()
-               newheight = screen.get_height()
-               #playerSpeed = 2.5*(newwidth/newheight)
-               #enemySpeed = 1.5*(newwidth/newheight)
-               width = newwidth
-               height = newheight
-               #appleNum = random.randint ( (int) (width/height)*2, (int) (width/height)*32)
-               #grassNum = random.randint ( (int) (width/height)*8, (int) (width/height)*64)
-               generateApple(True)
-               generateGrass(True)
-               generateTree(True)
-               generateBomb(True)
-               generateApple(False)
-               generateGrass(False)
-               generateBomb (False)
-               generateTree(False)
-               
-               #screen.blit (grassImg, (0, 0))
-               #grassTile.blit(grassTile, (0, 0))
-               j = 0
-               while j <= height:
+def gameLoop():
+     iterationNum = 0
+     global width, height, grassTile
+     global playerX, playerY, enemyX, enemyY, playerSpeed, enemySpeed
+     global playerHealth, hitDelay
+     running = True
+     while running:
+          iterationNum += 1
+          screen.fill ((0, 0, 0))
+          #screen.blit (bgImg, (0, 0))
+          #screen.blit (grassImg, (0, 0))
+          j = 0
+          while j <= height:
                     i = 0
                     while i <= width:
                          screen.blit (grassTile, (i, j))
                          i += 256
                     j += 256
-               if iterationNum < 20:
-                    screen.blit (startFont.render("Gotta eat em all!", True, (0, 0, 0)), (width/8, height/2))
-               pygame.display.update()
-          if event.type == pygame.QUIT:
-               running = False
-          # if keystroke is pressed, check which one
-          if event.type == pygame.KEYDOWN:
-               pygame.key.set_repeat(15)
-               if event.key == pygame.K_w:
-                    keys['w'] = True
-               if event.key == pygame.K_a:
-                    keys['a'] = True
-               if event.key == pygame.K_s:
-                    keys['s'] = True
-               if event.key == pygame.K_d:
-                    keys['d'] = True
-               if event.key == pygame.K_q:
-                    running = False
-          elif event.type == pygame.KEYUP:
-               if event.key == pygame.K_w:
-                    keys['w'] = False
-               if event.key == pygame.K_a:
-                    keys['a'] = False
-               if event.key == pygame.K_s:
-                    keys['s'] = False
-               if event.key == pygame.K_d:
-                    keys['d'] = False
-               
-     if keys['w']:
-          playerY -= playerSpeed
-     if keys['a']:
-          playerX -= playerSpeed
-     if keys['s']:
-          playerY += playerSpeed
-     if keys['d']:
-          playerX += playerSpeed
+          generateApple(False)
+          generateGrass(False)
+          generateBomb (False)
+          generateTree(False)
+          for event in pygame.event.get():
+               # if screen gets resized adjust window size, entity speeds          
+               if event.type == pygame.VIDEORESIZE:
+                    newwidth = screen.get_width()
+                    newheight = screen.get_height()
+                    #playerSpeed = 2.5*(newwidth/newheight)
+                    #enemySpeed = 1.5*(newwidth/newheight)
+                    width = newwidth
+                    height = newheight
+                    #appleNum = random.randint ( (int) (width/height)*2, (int) (width/height)*32)
+                    #grassNum = random.randint ( (int) (width/height)*8, (int) (width/height)*64)
+                    generateApple(True)
+                    generateGrass(True)
+                    generateTree(True)
+                    generateBomb(True)
+                    generateApple(False)
+                    generateGrass(False)
+                    generateBomb (False)
+                    generateTree(False)
                     
-     if playerX <= 0:
-          playerX = 0
-     if playerX >= width-32:
-          playerX = width-32
-     if playerY <= 0:
-          playerY = 0
-     if playerY >= height-32:
-          playerY = height-32
-     if enemyX <= 0:
-          enemyX = 0
-     if enemyX >= width-32:
-          enemyX = width-32
-     if enemyY <= 0:
-          enemyY = 0
-     if enemyY >= height-32:
-          enemyY = height-32
+                    #screen.blit (grassImg, (0, 0))
+                    #grassTile.blit(grassTile, (0, 0))
+                    j = 0
+                    while j <= height:
+                         i = 0
+                         while i <= width:
+                              screen.blit (grassTile, (i, j))
+                              i += 256
+                         j += 256
+                    if iterationNum < 20:
+                         screen.blit (startFont.render("Gotta eat em all!", True, (0, 0, 0)), (width/8, height/2))
+                    pygame.display.update()
+               if event.type == pygame.QUIT:
+                    running = False
+               # if keystroke is pressed, check which one
+               if event.type == pygame.KEYDOWN:
+                    pygame.key.set_repeat(15)
+                    if event.key == pygame.K_w:
+                         keys['w'] = True
+                    if event.key == pygame.K_a:
+                         keys['a'] = True
+                    if event.key == pygame.K_s:
+                         keys['s'] = True
+                    if event.key == pygame.K_d:
+                         keys['d'] = True
+                    if event.key == pygame.K_q:
+                         running = False
+               elif event.type == pygame.KEYUP:
+                    if event.key == pygame.K_w:
+                         keys['w'] = False
+                    if event.key == pygame.K_a:
+                         keys['a'] = False
+                    if event.key == pygame.K_s:
+                         keys['s'] = False
+                    if event.key == pygame.K_d:
+                         keys['d'] = False
+                    
+          if keys['w']:
+               playerY -= playerSpeed
+          if keys['a']:
+               playerX -= playerSpeed
+          if keys['s']:
+               playerY += playerSpeed
+          if keys['d']:
+               playerX += playerSpeed
+                         
+          if playerX <= 0:
+               playerX = 0
+          if playerX >= width-32:
+               playerX = width-32
+          if playerY <= 0:
+               playerY = 0
+          if playerY >= height-32:
+               playerY = height-32
+          if enemyX <= 0:
+               enemyX = 0
+          if enemyX >= width-32:
+               enemyX = width-32
+          if enemyY <= 0:
+               enemyY = 0
+          if enemyY >= height-32:
+               enemyY = height-32
+     
+          
+          collision = isCollision (playerX, playerY, enemyX, enemyY, 5)
+          if collision and hitDelay == 0:
+               hurtSound.play()
+               hurtSound.set_volume(0.1)
+               playerHealth -= 3
+               #playerSpeed -= 0.25
+               hitDelay = 20
+          elif collision and hitDelay != 0:
+               hitDelay -= 1
+          if playerHealth <= 0:
+               playerHealth = 0
+               screen.blit (endFont.render ("Game Over!", True, (163.6, 162.5, 162.5)), (width/10, height/2.5))
+               screen.blit (endFont.render ("Score:" + str(score), True, (0, 0, 255)), (width/5, height/2))
+               iterationNum = 0
+          elif score == appleNum-1:
+               screen.blit (endFont.render ("You Won!", True, (223.8, 225.7, 12.1)), (width/5, height/2.5))
+               screen.blit (endFont.render ("Score:" + str(score), True, (0, 0, 255)), (width/5, height/2))
+               iterationNum = 0
+          
+          player(playerX, playerY)
+          enemy (enemyX, enemyY)
+          screen.blit (healthFont.render("Health:" + str(playerHealth), True, (255, 0, 0)), (0, 0))
+          screen.blit (scoreFont.render("Score:" + str(score), True, (0, 0, 255)), (0, 25))
+          if iterationNum < 80 and iterationNum > 0:
+               screen.blit (startFont.render("Gotta eat em all!", True, (0, 0, 0)), (width/8, height/2.5))
+          clock = pygame.time.Clock()
+          clock.tick (75)
+          pygame.display.update()
+          if iterationNum == 0:
+               pygame.time.wait(5000)
+               running = False
 
-     
-     collision = isCollision (playerX, playerY, enemyX, enemyY, 5)
-     if collision and hitDelay == 0:
-          hurtSound.play()
-          hurtSound.set_volume(0.1)
-          playerHealth -= 3
-          #playerSpeed -= 0.25
-          hitDelay = 20
-     elif collision and hitDelay != 0:
-          hitDelay -= 1
-     if playerHealth <= 0:
-          playerHealth = 0
-          screen.blit (endFont.render ("Game Over!", True, (163.6, 162.5, 162.5)), (width/10, height/2.5))
-          screen.blit (endFont.render ("Score:" + str(score), True, (0, 0, 255)), (width/5, height/2))
-          iterationNum = 0
-     elif score == appleNum-1:
-          screen.blit (endFont.render ("You Won!", True, (223.8, 225.7, 12.1)), (width/5, height/2.5))
-          screen.blit (endFont.render ("Score:" + str(score), True, (0, 0, 255)), (width/5, height/2))
-          iterationNum = 0
-     
-     player(playerX, playerY)
-     enemy (enemyX, enemyY)
-     screen.blit (healthFont.render("Health:" + str(playerHealth), True, (255, 0, 0)), (0, 0))
-     screen.blit (scoreFont.render("Score:" + str(score), True, (0, 0, 255)), (0, 25))
-     if iterationNum < 80 and iterationNum > 0:
-          screen.blit (startFont.render("Gotta eat em all!", True, (0, 0, 0)), (width/8, height/2.5))
-     clock = pygame.time.Clock()
-     clock.tick (75)
-     pygame.display.update()
-     if iterationNum == 0:
-          pygame.time.wait(5000)
-          running = False
+gameLoop()
 if score == 0:
      print ("You ate no apples.")
 elif score == 1:
