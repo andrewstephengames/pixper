@@ -51,8 +51,6 @@ enemySpeed = 1
 # obstacles
 
 appleImg = []
-#appleX = random.randint(0, width-32)
-#appleY = random.randint (0, height-32)
 appleX = []
 appleY = []
 appleNum = 0
@@ -67,6 +65,11 @@ bombImg = []
 bombX = []
 bombY = []
 bombNum = 0
+
+treeImg = []
+treeX = []
+treeY = []
+treeNum = 0
 
 # fonts
 
@@ -92,9 +95,10 @@ pygame.mixer.music.play (-1)
 
 keys = {'w': False,'a': False,'s': False,'d': False}
      
-# entities
 
 score = 0
+
+# entities
 
 def player(x, y):
      screen.blit(playerImg, (x, y))
@@ -116,7 +120,7 @@ def generateApple (init):
      global appleImg, appleX, appleY, appleNum, tinyGrassTile
      global playerX, playerY, playerSpeed, score, width, height, playerHealth
      if init:
-          appleNum = random.randint (8, 32)
+          appleNum = random.randint (16, 64)
           for i in range (appleNum):
                appleImg.append (pygame.image.load("res/images/apple.png"))
                appleX.append(random.randint (0, width-32))
@@ -136,7 +140,7 @@ def generateApple (init):
 def generateGrass (init):
      global grassNum, grassTileImg, grassTileX, grassTileY, width, height
      if init:
-          grassNum = random.randint (8, 32)
+          grassNum = random.randint (32, 256)
           for i in range (grassNum):
                grassTileImg.append (pygame.image.load ("res/images/tinyGrasstile.png"))
                grassTileX.append (random.randint (0, width-32))
@@ -149,7 +153,7 @@ def generateBomb (init):
      global enemyX, enemyY, playerX, playerY, playerSpeed, enemySpeed
      global bombTile
      if init:
-          bombNum = random.randint (8, 32)
+          bombNum = random.randint (32, 64)
           for i in range (bombNum):
                bombImg.append (pygame.image.load ("res/images/bomb.png"))
                bombX.append (random.randint (0, width-32))
@@ -157,9 +161,9 @@ def generateBomb (init):
      else:
           for i in range (bombNum):
                screen.blit (bombImg[i], (bombX[i], bombY[i]))
-               if isCollision (playerX, playerY, bombX[i], bombY[i], 5):
+               if isCollision (playerX, playerY, bombX[i], bombY[i], 15):
                     if bombImg[i] != bombTile:
-                         playerHealth -= 2
+                         playerHealth -= 10
                          playerSpeed -= 0.5
                          screen.blit (bombTile, (bombX[i], bombY[i]))
                          bombImg[i] = bombTile
@@ -168,9 +172,9 @@ def generateBomb (init):
                     else:
                          playerX -= 32
                          playerY -= 32
-               if isCollision (enemyX, enemyY, bombX[i], bombY[i], 10):
+               if isCollision (enemyX, enemyY, bombX[i], bombY[i], 15):
                     if bombImg[i] != bombTile:
-                         enemySpeed += 0.25
+                         enemySpeed += 0.5
                          screen.blit (bombTile, (bombX[i], bombY[i]))
                          bombImg[i] = bombTile
                          bombSound.play()
@@ -178,10 +182,25 @@ def generateBomb (init):
                          if playerX == bombX[i] and playerY == bombY[i]:
                               playerX -= 1
                               playerY -= 1
+
+def generateTree (init):
+     global TreeImg, treeX, treeY, treeNum, playerX, playerY
+     if init:
+          treeNum = random.randint (16, 64)
+          for i in range (treeNum):
+               treeImg.append (pygame.image.load ("res/images/tree.png"))
+               treeX.append (random.randint (0, width-32))
+               treeY.append (random.randint (0, height-32))
+     else:
+          for i in range (treeNum):
+               screen.blit (treeImg[i], (treeX[i], treeY[i]))
+          
      
+
+generateBomb (True)
 generateApple (True)
 generateGrass (True)
-generateBomb (True)
+generateTree(True)
 
 iterationNum = 0
 
@@ -203,23 +222,26 @@ while running:
      generateApple(False)
      generateGrass(False)
      generateBomb (False)
+     generateTree(False)
      for event in pygame.event.get():
           # if screen gets resized adjust window size, entity speeds          
           if event.type == pygame.VIDEORESIZE:
                newwidth = screen.get_width()
                newheight = screen.get_height()
-               playerSpeed = 2.5*(newwidth/newheight)
-               enemySpeed = 1.5*(newwidth/newheight)
+               #playerSpeed = 2.5*(newwidth/newheight)
+               #enemySpeed = 1.5*(newwidth/newheight)
                width = newwidth
                height = newheight
                #appleNum = random.randint ( (int) (width/height)*2, (int) (width/height)*32)
                #grassNum = random.randint ( (int) (width/height)*8, (int) (width/height)*64)
                generateApple(True)
                generateGrass(True)
+               generateTree(True)
                generateBomb(True)
                generateApple(False)
                generateGrass(False)
                generateBomb (False)
+               generateTree(False)
                
                #screen.blit (grassImg, (0, 0))
                #grassTile.blit(grassTile, (0, 0))
@@ -288,16 +310,19 @@ while running:
      collision = isCollision (playerX, playerY, enemyX, enemyY, 5)
      if collision and hitDelay == 0:
           hurtSound.play()
-          playerHealth -= 1
+          playerHealth -= 3
           #playerSpeed -= 0.25
           hitDelay = 20
      elif collision and hitDelay != 0:
           hitDelay -= 1
      if playerHealth <= 0:
+          playerHealth = 0
           screen.blit (endFont.render ("Game Over!", True, (163.6, 162.5, 162.5)), (width/10, height/2.5))
+          screen.blit (endFont.render ("Score:" + str(score), True, (0, 0, 255)), (width/5, height/2))
           iterationNum = 0
-     elif score == appleNum:
+     elif score == appleNum-1:
           screen.blit (endFont.render ("You Won!", True, (223.8, 225.7, 12.1)), (width/5, height/2.5))
+          screen.blit (endFont.render ("Score:" + str(score), True, (0, 0, 255)), (width/5, height/2))
           iterationNum = 0
      
      player(playerX, playerY)
