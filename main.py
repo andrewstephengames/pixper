@@ -78,6 +78,7 @@ healthFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 20)
 scoreFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 20)
 startFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 40)
 endFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 70)
+titleFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 100)
 
 # sounds
 
@@ -204,19 +205,57 @@ def generateTree (init):
 
 def placeTile(tileImg):
      global height, width
-     j = 0
-     while j <= height:
-          i = 0
-          while i <= width:
+     i = 0
+     while i <= width:
+          j = 0
+          while j <= height:
                screen.blit (tileImg, (i, j))
-               i += 256
                j += 256
+          i += 256
      
 
 def mainMenu ():
+     global width, height, menuTile, screen
+     resize = False
      running = True
      while running:
-          placeTile (menuTile)
+          heightModifier = height/8
+          if not resize:
+               placeTile (menuTile)
+          # Source: https://colorkit.co/palette/ff0000-ff7f00-ffff00-00ff00-0000ff-6a0dad/
+               screen.blit (titleFont.render("P", True, (255, 0, 0)), (width/8, heightModifier))
+               screen.blit (titleFont.render("I", True, (255, 127, 0)), (width/8+100, heightModifier))
+               screen.blit (titleFont.render("X", True, (255, 255, 0)), (width/8+200, heightModifier))
+               screen.blit (titleFont.render("P", True, (0, 255, 0)), (width/8+300, heightModifier))
+               screen.blit (titleFont.render("E", True, (0, 0, 255)), (width/8+400, heightModifier))
+               screen.blit (titleFont.render("R", True, (106, 13, 173)), (width/8+500, heightModifier))
+          for event in pygame.event.get():
+               if event.type == pygame.VIDEORESIZE:
+                    resize = True
+                    newwidth = screen.get_width()
+                    newheight = screen.get_height()
+                    width = newwidth
+                    height = newheight
+                    heightModifier = height/8
+                    widthModifier = width/5
+                    placeTile (menuTile)
+                    screen.blit (titleFont.render("P", True, (255, 0, 0)), (widthModifier, heightModifier))
+                    screen.blit (titleFont.render("I", True, (255, 127, 0)), (widthModifier+100, heightModifier))
+                    screen.blit (titleFont.render("X", True, (255, 255, 0)), (widthModifier+200, heightModifier))
+                    screen.blit (titleFont.render("P", True, (0, 255, 0)), (widthModifier+300, heightModifier))
+                    screen.blit (titleFont.render("E", True, (0, 0, 255)), (widthModifier+400, heightModifier))
+                    screen.blit (titleFont.render("R", True, (106, 13, 173)), (widthModifier+500, heightModifier))
+                    #placeTile(menuTile)
+               if event.type == pygame.QUIT:
+                    running = False
+               if event.type == pygame.MOUSEBUTTONUP:
+                    pos = pygame.mouse.get_pos()
+               if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                         running = False
+               clock = pygame.time.Clock()
+               clock.tick (75)
+               pygame.display.update()
      
           
 generateBomb (True)
@@ -227,14 +266,14 @@ generateTree(True)
 
 def gameLoop():
      iterationNum = 0
-     global width, height, grassTile
+     global width, height, grassTile, screen
      global playerX, playerY, enemyX, enemyY, playerSpeed, enemySpeed
-     global playerHealth, hitDelay
+     global playerHealth, hitDelay, menuTile
      running = True
      while running:
           iterationNum += 1
-          placeTile (grassTile)
           screen.fill ((0, 0, 0))
+          placeTile (grassTile)
           #screen.blit (bgImg, (0, 0))
           #screen.blit (grassImg, (0, 0))
           generateApple(False)
@@ -246,11 +285,9 @@ def gameLoop():
                if event.type == pygame.VIDEORESIZE:
                     newwidth = screen.get_width()
                     newheight = screen.get_height()
-                    #playerSpeed = 2.5*(newwidth/newheight)
-                    #enemySpeed = 1.5*(newwidth/newheight)
                     width = newwidth
                     height = newheight
-                    placeTile(grassTile)
+                    #placeTile(grassTile)
                     #appleNum = random.randint ( (int) (width/height)*2, (int) (width/height)*32)
                     #grassNum = random.randint ( (int) (width/height)*8, (int) (width/height)*64)
                     generateApple(True)
@@ -350,9 +387,10 @@ def gameLoop():
           if iterationNum == 0:
                pygame.time.wait(5000)
                running = False
+          #mainMenu()
 
-#gameLoop()
-mainMenu()
+gameLoop()
+#mainMenu()
 if score == 0:
      print ("You ate no apples.")
 elif score == 1:
