@@ -29,6 +29,7 @@ pygame.display.set_icon (icon)
 # tiles
 grassImg = pygame.image.load ("res/images/grass.png")
 grassTile = pygame.image.load ("res/images/grasstile.png")
+menuTile = pygame.image.load ("res/images/menutile.png")
 tinyGrassTile = pygame.image.load ("res/images/tinyGrasstile.png")
 bombTile = pygame.image.load ("res/images/bombtile.png")
 
@@ -200,6 +201,23 @@ def generateTree (init):
      else:
           for i in range (treeNum):
                screen.blit (treeImg[i], (treeX[i], treeY[i]))
+
+def placeTile(tileImg):
+     global height, width
+     j = 0
+     while j <= height:
+          i = 0
+          while i <= width:
+               screen.blit (tileImg, (i, j))
+               i += 256
+               j += 256
+     
+
+def mainMenu ():
+     running = True
+     while running:
+          placeTile (menuTile)
+     
           
 generateBomb (True)
 generateApple (True)
@@ -215,16 +233,10 @@ def gameLoop():
      running = True
      while running:
           iterationNum += 1
+          placeTile (grassTile)
           screen.fill ((0, 0, 0))
           #screen.blit (bgImg, (0, 0))
           #screen.blit (grassImg, (0, 0))
-          j = 0
-          while j <= height:
-                    i = 0
-                    while i <= width:
-                         screen.blit (grassTile, (i, j))
-                         i += 256
-                    j += 256
           generateApple(False)
           generateGrass(False)
           generateBomb (False)
@@ -238,6 +250,7 @@ def gameLoop():
                     #enemySpeed = 1.5*(newwidth/newheight)
                     width = newwidth
                     height = newheight
+                    placeTile(grassTile)
                     #appleNum = random.randint ( (int) (width/height)*2, (int) (width/height)*32)
                     #grassNum = random.randint ( (int) (width/height)*8, (int) (width/height)*64)
                     generateApple(True)
@@ -251,13 +264,6 @@ def gameLoop():
                     
                     #screen.blit (grassImg, (0, 0))
                     #grassTile.blit(grassTile, (0, 0))
-                    j = 0
-                    while j <= height:
-                         i = 0
-                         while i <= width:
-                              screen.blit (grassTile, (i, j))
-                              i += 256
-                         j += 256
                     if iterationNum < 20:
                          screen.blit (startFont.render("Gotta eat em all!", True, (0, 0, 0)), (width/8, height/2))
                     pygame.display.update()
@@ -345,7 +351,8 @@ def gameLoop():
                pygame.time.wait(5000)
                running = False
 
-gameLoop()
+#gameLoop()
+mainMenu()
 if score == 0:
      print ("You ate no apples.")
 elif score == 1:
