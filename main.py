@@ -91,7 +91,8 @@ eatSound.set_volume(0.25)
 
 # music
 
-mainMusic = pygame.mixer.music.load("res/music/mainmusic.ogg")
+#mainMusic = pygame.mixer.music.load("res/music/mainmusic.ogg")
+mainMusic = pygame.mixer.music.load("res/music/music1.ogg")
 
 # play music indefinitely
 pygame.mixer.music.play (-1)
