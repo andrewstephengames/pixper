@@ -36,8 +36,9 @@ bombTile = pygame.image.load (os.path.normpath(os.path.join("./", "res/images/bo
 
 # player
 
-playerImg = pygame.image.load(os.path.normpath(os.path.join("./", "res/images/player-black.png")))
-enemyImg = pygame.image.load(os.path.normpath(os.path.join("./", "res/images/enemy-black.png")))
+#playerImg = pygame.image.load(os.path.normpath(os.path.join("./", "res/images/player-black.png")))
+playerImg = pygame.image.load(os.path.normpath(os.path.join("./", "res/images/player-test-sprite.png")))
+enemyImg = pygame.image.load(os.path.normpath(os.path.join("./", "res/images/enemy-test-sprite.png")))
 playerX = random.randint (0, width-32)
 playerY = random.randint (0, height-32)
 playerSpeed = 3
