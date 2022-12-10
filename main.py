@@ -1,6 +1,7 @@
 import pygame
 import random
 import math
+import os
 
 from pygame import mixer
 
@@ -19,7 +20,7 @@ screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
 
 # set title and icon
 pygame.display.set_caption ("Pixper")
-icon = pygame.image.load("res/images/player.png")
+icon = pygame.image.load(os.path.normpath(os.path.join("./", "res/images/player.png")))
 pygame.display.set_icon (icon)
 
 # background
@@ -27,16 +28,16 @@ pygame.display.set_icon (icon)
 #bgImg = pygame.image.load("res/background.jpg")
 
 # tiles
-grassImg = pygame.image.load ("res/images/grass.png")
-grassTile = pygame.image.load ("res/images/grasstile.png")
-menuTile = pygame.image.load ("res/images/menutile.png")
-tinyGrassTile = pygame.image.load ("res/images/tinyGrasstile.png")
-bombTile = pygame.image.load ("res/images/bombtile.png")
+grassImg = pygame.image.load (os.path.normpath(os.path.join("./", "res/images/grass.png")))
+grassTile = pygame.image.load (os.path.normpath(os.path.join("./", "res/images/grasstile.png")))
+menuTile = pygame.image.load (os.path.normpath(os.path.join("./", "res/images/menutile.png")))
+tinyGrassTile = pygame.image.load (os.path.normpath(os.path.join("./", "res/images/tinyGrasstile.png")))
+bombTile = pygame.image.load (os.path.normpath(os.path.join("./", "res/images/bombtile.png")))
 
 # player
 
-playerImg = pygame.image.load("res/images/player-black.png")
-enemyImg = pygame.image.load("res/images/enemy-black.png")
+playerImg = pygame.image.load(os.path.normpath(os.path.join("./", "res/images/player-black.png")))
+enemyImg = pygame.image.load(os.path.normpath(os.path.join("./", "res/images/enemy-black.png")))
 playerX = random.randint (0, width-32)
 playerY = random.randint (0, height-32)
 playerSpeed = 3
@@ -74,17 +75,17 @@ treeNum = 0
 
 # fonts
 
-healthFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 20)
-scoreFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 20)
-startFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 40)
-endFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 70)
-titleFont = pygame.font.Font ("res/fonts/Emulogic.ttf", 100)
+healthFont = pygame.font.Font (os.path.normpath(os.path.join ("./", "res/fonts/Emulogic.ttf")), 20)
+scoreFont = pygame.font.Font (os.path.normpath(os.path.join("./", "res/fonts/Emulogic.ttf")), 20)
+startFont = pygame.font.Font (os.path.normpath(os.path.join("./", "res/fonts/Emulogic.ttf")), 40)
+endFont = pygame.font.Font (os.path.normpath(os.path.join("./", "res/fonts/Emulogic.ttf")), 70)
+titleFont = pygame.font.Font (os.path.normpath(os.path.join("./", "res/fonts/Emulogic.ttf")), 100)
 
 # sounds
 
-hurtSound = pygame.mixer.Sound ("res/sounds/oof.ogg")
-bombSound = pygame.mixer.Sound ("res/sounds/boom.ogg")
-eatSound = pygame.mixer.Sound ("res/sounds/eat.ogg")
+hurtSound = pygame.mixer.Sound (os.path.normpath(os.path.join("./", "res/sounds/oof.ogg")))
+bombSound = pygame.mixer.Sound (os.path.normpath(os.path.join("./", "res/sounds/boom.ogg")))
+eatSound = pygame.mixer.Sound (os.path.normpath(os.path.join("./", "res/sounds/eat.ogg")))
 hurtSound.set_volume(0.25)
 bombSound.set_volume(0.25)
 eatSound.set_volume(0.25)
@@ -92,7 +93,7 @@ eatSound.set_volume(0.25)
 # music
 
 #mainMusic = pygame.mixer.music.load("res/music/mainmusic.ogg")
-mainMusic = pygame.mixer.music.load("res/music/music1.ogg")
+mainMusic = pygame.mixer.music.load(os.path.normpath(os.path.join("./", "res/music/music1.ogg")))
 
 # play music indefinitely
 pygame.mixer.music.play (-1)
@@ -128,7 +129,7 @@ def generateApple (init):
      if init:
           appleNum = random.randint (16, 64)
           for i in range (appleNum):
-               appleImg.append (pygame.image.load("res/images/apple.png"))
+               appleImg.append (pygame.image.load(os.path.normpath(os.path.join ("./", "res/images/apple.png"))))
                appleX.append(random.randint (0, width-32))
                appleY.append(random.randint (0, height-32))
      else:
@@ -149,7 +150,7 @@ def generateGrass (init):
      if init:
           grassNum = random.randint (32, 256)
           for i in range (grassNum):
-               grassTileImg.append (pygame.image.load ("res/images/tinyGrasstile.png"))
+               grassTileImg.append (pygame.image.load (os.path.normpath (os.path.join("./", "res/images/tinyGrasstile.png"))))
                grassTileX.append (random.randint (0, width-32))
                grassTileY.append (random.randint (0, height-32))
      else:
@@ -162,7 +163,7 @@ def generateBomb (init):
      if init:
           bombNum = random.randint (32, 64)
           for i in range (bombNum):
-               bombImg.append (pygame.image.load ("res/images/bomb.png"))
+               bombImg.append (pygame.image.load (os.path.normpath(os.path.join("./", "res/images/bomb.png"))))
                bombX.append (random.randint (0, width-32))
                bombY.append (random.randint (0, height-32))
      else:
@@ -197,7 +198,7 @@ def generateTree (init):
      if init:
           treeNum = random.randint (16, 64)
           for i in range (treeNum):
-               treeImg.append (pygame.image.load ("res/images/tree.png"))
+               treeImg.append (pygame.image.load (os.path.normpath(os.path.join("./", "res/images/tree.png"))))
                treeX.append (random.randint (0, width-32))
                treeY.append (random.randint (0, height-32))
      else:
