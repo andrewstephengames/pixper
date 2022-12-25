@@ -5,7 +5,6 @@ import os
 
 from pygame import mixer
 
-#pygame.mixer.pre_init(44100, 16, 2, 4096)
 # initialize pygame
 pygame.init ()
 #pygame.mixer.init()
