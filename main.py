@@ -1,4 +1,5 @@
 import pygame
+import pygame_menu
 import random
 import math
 import os
@@ -169,7 +170,7 @@ def generateBomb (init):
      else:
           for i in range (bombNum):
                screen.blit (bombImg[i], (bombX[i], bombY[i]))
-               if isCollision (playerX, playerY, bombX[i], bombY[i], 15):
+               if isCollision (playerX, playerY, bombX[i], bombY[i], 10):
                     if bombImg[i] != bombTile:
                          playerHealth -= 10
                          playerSpeed -= 0.5
@@ -181,7 +182,7 @@ def generateBomb (init):
                     else:
                          playerX -= 32
                          playerY -= 32
-               if isCollision (enemyX, enemyY, bombX[i], bombY[i], 15):
+               if isCollision (enemyX, enemyY, bombX[i], bombY[i], 10):
                     if bombImg[i] != bombTile:
                          enemySpeed += 0.5
                          screen.blit (bombTile, (bombX[i], bombY[i]))
@@ -216,48 +217,68 @@ def placeTile(tileImg):
           i += 256
      
 
+def titleBlit():
+     global width, height, screen
+     heightModifier = height/8
+     screen.blit (titleFont.render("P", True, (255, 0, 0)), (width/8, heightModifier))
+     screen.blit (titleFont.render("I", True, (255, 127, 0)), (width/8+100, heightModifier))
+     screen.blit (titleFont.render("X", True, (255, 255, 0)), (width/8+200, heightModifier))
+     screen.blit (titleFont.render("P", True, (0, 255, 0)), (width/8+300, heightModifier))
+     screen.blit (titleFont.render("E", True, (0, 0, 255)), (width/8+400, heightModifier))
+     screen.blit (titleFont.render("R", True, (106, 13, 173)), (width/8+500, heightModifier))
+
+def set_difficulty(value, difficulty):
+    # Do the job here !
+     pass
+
+def start_the_game():
+    # Do the job here !
+     pass
+     
+
 def mainMenu ():
      global width, height, menuTile, screen
      resize = False
      running = True
-     while running:
-          heightModifier = height/8
-          if not resize:
-               placeTile (menuTile)
-          # Source: https://colorkit.co/palette/ff0000-ff7f00-ffff00-00ff00-0000ff-6a0dad/
-               screen.blit (titleFont.render("P", True, (255, 0, 0)), (width/8, heightModifier))
-               screen.blit (titleFont.render("I", True, (255, 127, 0)), (width/8+100, heightModifier))
-               screen.blit (titleFont.render("X", True, (255, 255, 0)), (width/8+200, heightModifier))
-               screen.blit (titleFont.render("P", True, (0, 255, 0)), (width/8+300, heightModifier))
-               screen.blit (titleFont.render("E", True, (0, 0, 255)), (width/8+400, heightModifier))
-               screen.blit (titleFont.render("R", True, (106, 13, 173)), (width/8+500, heightModifier))
-          for event in pygame.event.get():
-               if event.type == pygame.VIDEORESIZE:
-                    resize = True
-                    newwidth = screen.get_width()
-                    newheight = screen.get_height()
-                    width = newwidth
-                    height = newheight
-                    heightModifier = height/8
-                    widthModifier = width/5
-                    placeTile (menuTile)
-                    screen.blit (titleFont.render("P", True, (255, 0, 0)), (widthModifier, heightModifier))
-                    screen.blit (titleFont.render("I", True, (255, 127, 0)), (widthModifier+100, heightModifier))
-                    screen.blit (titleFont.render("X", True, (255, 255, 0)), (widthModifier+200, heightModifier))
-                    screen.blit (titleFont.render("P", True, (0, 255, 0)), (widthModifier+300, heightModifier))
-                    screen.blit (titleFont.render("E", True, (0, 0, 255)), (widthModifier+400, heightModifier))
-                    screen.blit (titleFont.render("R", True, (106, 13, 173)), (widthModifier+500, heightModifier))
-                    #placeTile(menuTile)
-               if event.type == pygame.QUIT:
+     heightModifier = height/8
+     if not resize:
+          pass
+          #placeTile (menuTile)
+     # Source: https://colorkit.co/palette/ff0000-ff7f00-ffff00-00ff00-0000ff-6a0dad/
+     titleBlit()
+     for event in pygame.event.get():
+          if event.type == pygame.VIDEORESIZE:
+               resize = True
+               newwidth = screen.get_width()
+               newheight = screen.get_height()
+               width = newwidth
+               height = newheight
+               heightModifier = height/8
+               widthModifier = width/5
+               #placeTile (menuTile)
+               titleBlit()
+               #placeTile(menuTile)
+          if event.type == pygame.QUIT:
+               running = False
+          if event.type == pygame.MOUSEBUTTONUP:
+               pos = pygame.mouse.get_pos()
+          if event.type == pygame.KEYDOWN:
+               if event.key == pygame.K_q:
                     running = False
-               if event.type == pygame.MOUSEBUTTONUP:
-                    pos = pygame.mouse.get_pos()
-               if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                         running = False
-               clock = pygame.time.Clock()
-               clock.tick (75)
-               pygame.display.update()
+          menu = pygame_menu.Menu('Pixper', 400, 300, theme=pygame_menu.themes.THEME_BLUE)
+          menuFont = pygame.font.Font(pygame_menu.font.FONT_8BIT, 30)
+	  # TODO: menuFont and fix menu "pause on quit" bug
+          menu.font = menuFont
+          menu.add.text_input('Name: ', default='Andrew')
+          menu.add.selector('Difficulty: ', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
+          menu.add.button('Play', gameLoop)
+          menu.add.button('Quit', pygame_menu.events.EXIT)
+
+          menu.mainloop (screen)
+
+          clock = pygame.time.Clock()
+          clock.tick (75)
+          pygame.display.update()
      
           
 generateBomb (True)
@@ -308,6 +329,7 @@ def gameLoop():
                     pygame.display.update()
                if event.type == pygame.QUIT:
                     running = False
+                    pygame_menu.events.EXIT
                # if keystroke is pressed, check which one
                if event.type == pygame.KEYDOWN:
                     pygame.key.set_repeat(15)
@@ -321,6 +343,7 @@ def gameLoop():
                          keys['d'] = True
                     if event.key == pygame.K_q:
                          running = False
+                         pygame_menu.events.EXIT
                elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_w:
                          keys['w'] = False
@@ -364,7 +387,7 @@ def gameLoop():
                hurtSound.set_volume(0.1)
                playerHealth -= 3
                #playerSpeed -= 0.25
-               hitDelay = 20
+               hitDelay = 10
           elif collision and hitDelay != 0:
                hitDelay -= 1
           if playerHealth <= 0:
@@ -387,12 +410,11 @@ def gameLoop():
           clock.tick (75)
           pygame.display.update()
           if iterationNum == 0:
-               pygame.time.wait(5000)
+               pygame.time.wait(2500)
                running = False
           #mainMenu()
 
-gameLoop()
-#mainMenu()
+mainMenu()
 if score == 0:
      print ("You ate no apples.")
 elif score == 1:
