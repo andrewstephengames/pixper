@@ -25,7 +25,7 @@ pygame.display.set_icon (icon)
 
 # background
 
-#bgImg = pygame.image.load("res/background.jpg")
+bgImg = pygame.image.load("res/images/background.jpg")
 
 # tiles
 grassImg = pygame.image.load (os.path.normpath(os.path.join("./", "res/images/grass.png")))
@@ -73,6 +73,9 @@ treeImg = []
 treeX = []
 treeY = []
 treeNum = 0
+
+# switches
+
 
 # fonts
 
@@ -128,7 +131,7 @@ def generateApple (init):
      global appleImg, appleX, appleY, appleNum, tinyGrassTile
      global playerX, playerY, playerSpeed, score, width, height, playerHealth
      if init:
-          appleNum = random.randint (16, 64)
+          appleNum = random.randint (8, 16)
           for i in range (appleNum):
                appleImg.append (pygame.image.load(os.path.normpath(os.path.join ("./", "res/images/apple.png"))))
                appleX.append(random.randint (0, width-32))
@@ -162,7 +165,7 @@ def generateBomb (init):
      global enemyX, enemyY, playerX, playerY, playerSpeed, enemySpeed
      global bombTile
      if init:
-          bombNum = random.randint (32, 64)
+          bombNum = random.randint (8, 16)
           for i in range (bombNum):
                bombImg.append (pygame.image.load (os.path.normpath(os.path.join("./", "res/images/bomb.png"))))
                bombX.append (random.randint (0, width-32))
@@ -170,7 +173,7 @@ def generateBomb (init):
      else:
           for i in range (bombNum):
                screen.blit (bombImg[i], (bombX[i], bombY[i]))
-               if isCollision (playerX, playerY, bombX[i], bombY[i], 10):
+               if isCollision (playerX, playerY, bombX[i], bombY[i], 20):
                     if bombImg[i] != bombTile:
                          playerHealth -= 10
                          playerSpeed -= 0.5
@@ -182,7 +185,7 @@ def generateBomb (init):
                     else:
                          playerX -= 32
                          playerY -= 32
-               if isCollision (enemyX, enemyY, bombX[i], bombY[i], 10):
+               if isCollision (enemyX, enemyY, bombX[i], bombY[i], 30):
                     if bombImg[i] != bombTile:
                          enemySpeed += 0.5
                          screen.blit (bombTile, (bombX[i], bombY[i]))
@@ -231,10 +234,12 @@ def set_difficulty(value, difficulty):
     # Do the job here !
      pass
 
-def start_the_game():
-    # Do the job here !
-     pass
-     
+menu = pygame_menu.Menu('Pixper', 400, 300, theme=pygame_menu.themes.THEME_BLUE)
+
+def startGame():
+    global menu
+    gameLoop()
+    menu.disable()
 
 def mainMenu ():
      global width, height, menuTile, screen
@@ -245,7 +250,7 @@ def mainMenu ():
           pass
           #placeTile (menuTile)
      # Source: https://colorkit.co/palette/ff0000-ff7f00-ffff00-00ff00-0000ff-6a0dad/
-     titleBlit()
+#     titleBlit()
      for event in pygame.event.get():
           if event.type == pygame.VIDEORESIZE:
                resize = True
@@ -256,7 +261,7 @@ def mainMenu ():
                heightModifier = height/8
                widthModifier = width/5
                #placeTile (menuTile)
-               titleBlit()
+#               titleBlit()
                #placeTile(menuTile)
           if event.type == pygame.QUIT:
                running = False
@@ -265,16 +270,16 @@ def mainMenu ():
           if event.type == pygame.KEYDOWN:
                if event.key == pygame.K_q:
                     running = False
-          menu = pygame_menu.Menu('Pixper', 400, 300, theme=pygame_menu.themes.THEME_BLUE)
-          menuFont = pygame.font.Font(pygame_menu.font.FONT_8BIT, 30)
-	  # TODO: menuFont and fix menu "pause on quit" bug
+#          screen.blit (bgImg, (0, 0))
+          menuFont = titleFont
           menu.font = menuFont
           menu.add.text_input('Name: ', default='Andrew')
           menu.add.selector('Difficulty: ', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
-          menu.add.button('Play', gameLoop)
+          menu.add.button('Play', startGame)
           menu.add.button('Quit', pygame_menu.events.EXIT)
 
-          menu.mainloop (screen)
+          if menu.is_enabled():
+               menu.mainloop (screen)
 
           clock = pygame.time.Clock()
           clock.tick (75)
@@ -412,6 +417,8 @@ def gameLoop():
           if iterationNum == 0:
                pygame.time.wait(2500)
                running = False
+               pygame_menu.events.EXIT
+          #menu.disable()
           #mainMenu()
 
 mainMenu()
