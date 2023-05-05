@@ -424,7 +424,7 @@ def gameLoop():
           clock.tick (75)
           pygame.display.update()
           if iterationNum == 0:
-               pygame.time.wait(2500)
+               #pygame.time.wait(2500)
                running = False
                pygame_menu.events.EXIT
 mainMenu()
