@@ -57,6 +57,8 @@ appleImg = []
 appleX = []
 appleY = []
 appleNum = 0
+randX = 16
+randY = 64
 
 
 grassTileImg = []
@@ -122,6 +124,16 @@ def enemy(x, y):
      if enemyY < playerY:
           enemyY += enemySpeed
      else: enemyY -= enemySpeed
+# FIXME: difficulty detection
+def setDifficulty(difficulty, value):
+     if difficulty == 'Easy' or value == 1:
+          randX = 16
+          randY = 64
+          enemySpeed = 1
+     if difficulty == 'Hard' or value == 2:
+          randX = 8
+          randY = 16
+          enemySpeed = 2
      
 def isCollision (x1, y1, x2, y2, collide):
      distance = math.sqrt(math.pow(x2-x1, 2) + math.pow (y2-y1, 2))
@@ -131,7 +143,7 @@ def generateApple (init):
      global appleImg, appleX, appleY, appleNum, tinyGrassTile
      global playerX, playerY, playerSpeed, score, width, height, playerHealth
      if init:
-          appleNum = random.randint (8, 16)
+          appleNum = random.randint (randX, randY)
           for i in range (appleNum):
                appleImg.append (pygame.image.load(os.path.normpath(os.path.join ("./", "res/images/apple.png"))))
                appleX.append(random.randint (0, width-32))
@@ -165,7 +177,7 @@ def generateBomb (init):
      global enemyX, enemyY, playerX, playerY, playerSpeed, enemySpeed
      global bombTile
      if init:
-          bombNum = random.randint (8, 16)
+          bombNum = random.randint (randX, randY)
           for i in range (bombNum):
                bombImg.append (pygame.image.load (os.path.normpath(os.path.join("./", "res/images/bomb.png"))))
                bombX.append (random.randint (0, width-32))
@@ -230,9 +242,6 @@ def titleBlit():
      screen.blit (titleFont.render("E", True, (0, 0, 255)), (width/8+400, heightModifier))
      screen.blit (titleFont.render("R", True, (106, 13, 173)), (width/8+500, heightModifier))
 
-def set_difficulty(value, difficulty):
-    # Do the job here !
-     pass
 
 menu = pygame_menu.Menu('Pixper', 400, 300, theme=pygame_menu.themes.THEME_BLUE)
 
@@ -274,7 +283,7 @@ def mainMenu ():
           menuFont = titleFont
           menu.font = menuFont
           menu.add.text_input('Name: ', default='Andrew')
-          menu.add.selector('Difficulty: ', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
+          menu.add.selector('Difficulty: ',  [('Easy', 1), ('Hard', 2)], onchange=setDifficulty)
           menu.add.button('Play', startGame)
           menu.add.button('Quit', pygame_menu.events.EXIT)
 
@@ -392,7 +401,7 @@ def gameLoop():
                hurtSound.set_volume(0.1)
                playerHealth -= 3
                #playerSpeed -= 0.25
-               hitDelay = 10
+               hitDelay = 5
           elif collision and hitDelay != 0:
                hitDelay -= 1
           if playerHealth <= 0:
@@ -418,9 +427,6 @@ def gameLoop():
                pygame.time.wait(2500)
                running = False
                pygame_menu.events.EXIT
-          #menu.disable()
-          #mainMenu()
-
 mainMenu()
 if score == 0:
      print ("You ate no apples.")
