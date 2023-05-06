@@ -181,8 +181,13 @@ def generateBomb (init):
           bombNum = random.randint (randX, randY)
           for i in range (bombNum):
                bombImg.append (pygame.image.load (os.path.normpath(os.path.join("./", "res/images/bomb.png"))))
-               bombX.append (random.randint (0, width-32))
-               bombY.append (random.randint (0, height-32))
+               randBombX = random.randint (0, width-32)
+               randBombY = random.randint (0, width-32)
+               while randBombX == playerX and randBombY == playerY:
+                    randBombX = random.randint (0, width-32)
+                    randBombY = random.randint (0, width-32)
+               bombX.append (randBombX)
+               bombY.append (randBombY)
      else:
           for i in range (bombNum):
                screen.blit (bombImg[i], (bombX[i], bombY[i]))
@@ -195,9 +200,9 @@ def generateBomb (init):
                          bombSound.play()
                          bombSound.set_volume(0.1)
                          hurtSound.play()
-                    else:
-                         playerX -= 32
-                         playerY -= 32
+#                    else:
+#                         playerX -= 32
+#                         playerY -= 32
                if isCollision (enemyX, enemyY, bombX[i], bombY[i], 30):
                     if bombImg[i] != bombTile:
                          enemySpeed += 0.5
@@ -209,6 +214,7 @@ def generateBomb (init):
                          if playerX == bombX[i] and playerY == bombY[i]:
                               playerX -= 1
                               playerY -= 1
+                              playerSpeed -= 0.05
 
 def generateTree (init):
      global treeImg, treeX, treeY, treeNum, playerX, playerY
@@ -257,6 +263,7 @@ def titleBlit():
 #menu = pygame_menu.Menu('Pixper', width, height, theme=pygame_menu.themes.THEME_DEFAULT)
 menu = pygame_menu.Menu('Pixper', width, height, theme=pygame_menu.themes.THEME_BLUE)
 
+# toggle the music if the command line argument mute is used
 if len(sys.argv) > 1 and sys.argv[1] == "mute":
      toggleMusic()
 
@@ -296,7 +303,7 @@ def mainMenu ():
                     running = False
 #          screen.blit (bgImg, (0, 0))
           menu.font = titleFont
-          menu.add.text_input('Name: ', default='Andrew')
+          menu.add.text_input('Name: ', default='User')
           menu.add.selector('Difficulty: ',  [('Easy', 1), ('Hard', 2)], onchange=setDifficulty)
           playButton = menu.add.button('Play', startGame)
           menu.add.button('Quit', pygame_menu.events.EXIT)
