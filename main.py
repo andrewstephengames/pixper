@@ -58,8 +58,6 @@ appleImg = []
 appleX = []
 appleY = []
 appleNum = 0
-randX = 16
-randY = 64
 
 
 grassTileImg = []
@@ -125,16 +123,26 @@ def enemy(x, y):
      if enemyY < playerY:
           enemyY += enemySpeed
      else: enemyY -= enemySpeed
-# FIXME: difficulty detection
-def setDifficulty(difficulty, value):
-     if difficulty == 'Easy' or value == 1:
+# Toggles hard mode
+hardMode = False
+randX = 8
+randY = 32
+def toggleDifficulty():
+     global hardMode, randX, randY, enemySpeed, screen, healthFont
+     if not hardMode:
+          hardMode = True
           randX = 16
           randY = 64
-          enemySpeed = 1
-     if difficulty == 'Hard' or value == 2:
-          randX = 8
-          randY = 16
           enemySpeed = 2
+          screen.blit (healthFont.render("Hard Mode Enabled!", True, (255, 0, 0)), (0, 0))
+          print("Hard Mode Enabled!")
+     else:
+          hardMode = False
+          randX = 8
+          randY = 32
+          enemySpeed = 1
+          screen.blit (healthFont.render("Hard Mode Disabled!", True, (255, 255, 255)), (0, 0))
+          print("Hard Mode Disabled!")
      
 def isCollision (x1, y1, x2, y2, collide):
      distance = math.sqrt(math.pow(x2-x1, 2) + math.pow (y2-y1, 2))
@@ -143,12 +151,19 @@ def isCollision (x1, y1, x2, y2, collide):
 def generateApple (init):
      global appleImg, appleX, appleY, appleNum, tinyGrassTile
      global playerX, playerY, playerSpeed, score, width, height, playerHealth
+     global randX, randY
+     if hardMode:
+          randX = 16
+          randY = 32
+     else:
+          randX = 8
+          randY = 32
      if init:
           appleNum = random.randint (randX, randY)
           for i in range (appleNum):
                appleImg.append (pygame.image.load(os.path.normpath(os.path.join ("./", "res/images/apple.png"))))
-               appleX.append(random.randint (0, width-32))
-               appleY.append(random.randint (0, height-32))
+               appleX.append(random.randint (32, width-32))
+               appleY.append(random.randint (32, height-32))
      else:
           for i in range (appleNum):
                screen.blit (appleImg[i], (appleX[i], appleY[i]))
@@ -176,16 +191,22 @@ def generateGrass (init):
 def generateBomb (init):
      global bombNum, bombImg, bombX, bombY, width, height, playerHealth
      global enemyX, enemyY, playerX, playerY, playerSpeed, enemySpeed
-     global bombTile
+     global bombTile, randX, randY
+     if hardMode:
+          randX = 32
+          randY = 96
+     else:
+          randX = 8
+          randY = 32
      if init:
           bombNum = random.randint (randX, randY)
           for i in range (bombNum):
                bombImg.append (pygame.image.load (os.path.normpath(os.path.join("./", "res/images/bomb.png"))))
-               randBombX = random.randint (0, width-32)
-               randBombY = random.randint (0, width-32)
+               randBombX = random.randint (32, width-32)
+               randBombY = random.randint (32, height-32)
                while randBombX == playerX and randBombY == playerY:
-                    randBombX = random.randint (0, width-32)
-                    randBombY = random.randint (0, width-32)
+                    randBombX = random.randint (128, width-128)
+                    randBombY = random.randint (128, height-128)
                bombX.append (randBombX)
                bombY.append (randBombY)
      else:
@@ -260,8 +281,9 @@ def titleBlit():
      screen.blit (titleFont.render("R", True, (106, 13, 173)), (width/8+500, heightModifier))
 
 
-#menu = pygame_menu.Menu('Pixper', width, height, theme=pygame_menu.themes.THEME_DEFAULT)
-menu = pygame_menu.Menu('Pixper', width, height, theme=pygame_menu.themes.THEME_BLUE)
+#menu = pygame_menu.Menu('Pixper', width, height, theme=pygame_menu.themes.THEME_SOLARIZED)
+menu = pygame_menu.Menu('Pixper', width, height, theme=pygame_menu.themes.THEME_DARK)
+#menu = pygame_menu.Menu('Pixper', width, height, theme=pygame_menu.themes.THEME_BLUE)
 
 # toggle the music if the command line argument mute is used
 if len(sys.argv) > 1 and sys.argv[1] == "mute":
@@ -303,11 +325,12 @@ def mainMenu ():
                     running = False
 #          screen.blit (bgImg, (0, 0))
           menu.font = titleFont
-          menu.add.text_input('Name: ', default='User')
-          menu.add.selector('Difficulty: ',  [('Easy', 1), ('Hard', 2)], onchange=setDifficulty)
+          menu.add.text_input('Name: ', default='Player')
+          #menu.add.selector('Difficulty: ',  [('Easy', 1), ('Hard', 2)], onchange=setDifficulty)
+          menu.add.button('Toggle Difficulty', toggleDifficulty)
           playButton = menu.add.button('Play', startGame)
           menu.add.button('Quit', pygame_menu.events.EXIT)
-          menu.add.button('Mute', toggleMusic)
+          menu.add.button('Toggle Music', toggleMusic)
 
           if menu.is_enabled():
                menu.mainloop (screen)
@@ -417,13 +440,13 @@ def gameLoop():
                enemyY = height-32
      
           
-          collision = isCollision (playerX, playerY, enemyX, enemyY, 5)
+          collision = isCollision (playerX, playerY, enemyX, enemyY, 2)
           if collision and hitDelay == 0:
                hurtSound.play()
                hurtSound.set_volume(0.1)
                playerHealth -= 3
                playerSpeed -= 0.01
-               hitDelay = 5
+               hitDelay = 7
           elif collision and hitDelay != 0:
                hitDelay -= 1
           if playerHealth <= 0:
@@ -431,7 +454,7 @@ def gameLoop():
                screen.blit (endFont.render ("Game Over!", True, (163.6, 162.5, 162.5)), (width/10, height/2.5))
                screen.blit (endFont.render ("Score:" + str(score), True, (0, 0, 255)), (width/5, height/2))
                iterationNum = 0
-          elif score == appleNum-1:
+          elif score == appleNum:
                screen.blit (endFont.render ("You Won!", True, (223.8, 225.7, 12.1)), (width/5, height/2.5))
                screen.blit (endFont.render ("Score:" + str(score), True, (0, 0, 255)), (width/5, height/2))
                iterationNum = 0
