@@ -2,6 +2,7 @@ import pygame
 import pygame_menu
 import random
 import math
+import sys
 import os
 
 from pygame import mixer
@@ -230,7 +231,17 @@ def placeTile(tileImg):
                screen.blit (tileImg, (i, j))
                j += 256
           i += 256
-     
+
+musicPaused = False
+
+def toggleMusic():
+    global musicPaused
+    if not musicPaused:
+        pygame.mixer.music.pause()
+        musicPaused = True
+    else:
+        pygame.mixer.music.unpause()
+        musicPaused = False
 
 def titleBlit():
      global width, height, screen
@@ -243,7 +254,11 @@ def titleBlit():
      screen.blit (titleFont.render("R", True, (106, 13, 173)), (width/8+500, heightModifier))
 
 
-menu = pygame_menu.Menu('Pixper', 400, 300, theme=pygame_menu.themes.THEME_BLUE)
+#menu = pygame_menu.Menu('Pixper', width, height, theme=pygame_menu.themes.THEME_DEFAULT)
+menu = pygame_menu.Menu('Pixper', width, height, theme=pygame_menu.themes.THEME_BLUE)
+
+if len(sys.argv) > 1 and sys.argv[1] == "mute":
+     toggleMusic()
 
 def startGame():
     global menu
@@ -280,12 +295,12 @@ def mainMenu ():
                if event.key == pygame.K_q:
                     running = False
 #          screen.blit (bgImg, (0, 0))
-          menuFont = titleFont
-          menu.font = menuFont
+          menu.font = titleFont
           menu.add.text_input('Name: ', default='Andrew')
           menu.add.selector('Difficulty: ',  [('Easy', 1), ('Hard', 2)], onchange=setDifficulty)
-          menu.add.button('Play', startGame)
+          playButton = menu.add.button('Play', startGame)
           menu.add.button('Quit', pygame_menu.events.EXIT)
+          menu.add.button('Mute', toggleMusic)
 
           if menu.is_enabled():
                menu.mainloop (screen)
@@ -400,7 +415,7 @@ def gameLoop():
                hurtSound.play()
                hurtSound.set_volume(0.1)
                playerHealth -= 3
-               #playerSpeed -= 0.25
+               playerSpeed -= 0.01
                hitDelay = 5
           elif collision and hitDelay != 0:
                hitDelay -= 1
