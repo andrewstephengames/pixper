@@ -265,7 +265,7 @@ def generateBomb (init):
                bombImg.append (pygame.image.load (os.path.normpath(os.path.join("./", "res/images/bomb.png"))))
                randBombX = random.randint (32, width-32)
                randBombY = random.randint (32, height-32)
-               while randBombX == playerX and randBombY == playerY:
+               while abs(randBombX-playerX) <= 5 or abs(randBombY-playerY) <= 5:
                     randBombX = random.randint (128, width-128)
                     randBombY = random.randint (128, height-128)
                bombX.append (randBombX)
@@ -277,9 +277,10 @@ def generateBomb (init):
                     if bombImg[i] != bombTile:
                          playerHealth -= 10
                          playerSpeed -= 0.5
+                         obstacleHitter = playerName
                          screen.blit (bombTile, (bombX[i], bombY[i]))
                          RNG = (bombX[i]+bombY[i])/2
-                         c.execute("INSERT OR REPLACE INTO Obstacles VALUES (?, ?, ?)", (playerName, RNG, "Bomb"))
+                         c.execute("INSERT OR REPLACE INTO Obstacles VALUES (?, ?, ?)", (obstacleHitter, RNG, "Bomb"))
                          bombImg[i] = bombTile
                          bombSound.play()
                          bombSound.set_volume(0.1)
@@ -291,17 +292,18 @@ def generateBomb (init):
                     if bombImg[i] != bombTile:
                          enemySpeed += 0.5
                          RNG = (bombX[i]+bombY[i])/2
-                         playerName = "Enemy"
-                         c.execute("INSERT OR REPLACE INTO Obstacles VALUES (?, ?, ?)", (playerName, RNG, "Bomb"))
+                         obstacleHitter = "Enemy"
+                         c.execute("INSERT OR REPLACE INTO Obstacles VALUES (?, ?, ?)", (obstacleHitter, RNG, "Bomb"))
                          screen.blit (bombTile, (bombX[i], bombY[i]))
                          bombImg[i] = bombTile
                          bombSound.play()
                          bombSound.set_volume(0.1)
                     else:
                          if playerX == bombX[i] and playerY == bombY[i]:
+                              obstacleHitter = playerName
                               playerX -= 5
                               playerY -= 5
-                              playerSpeed -= 0.05
+                              playerSpeed -= 0.1
 
 def generateTree (init):
      global treeImg, treeX, treeY, treeNum, playerX, playerY
