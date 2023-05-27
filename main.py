@@ -107,6 +107,7 @@ keys = {'w': False,'a': False,'s': False,'d': False}
 score = 0
 # initialize player name
 playerName = "Player"
+winnerName = "Player"
 
 musicPaused = False
 
@@ -298,12 +299,12 @@ def generateBomb (init):
                          bombImg[i] = bombTile
                          bombSound.play()
                          bombSound.set_volume(0.1)
-                    else:
-                         if playerX == bombX[i] and playerY == bombY[i]:
-                              obstacleHitter = playerName
-                              playerX -= 5
-                              playerY -= 5
-                              playerSpeed -= 0.1
+#                    else:
+#                         if playerX == bombX[i] and playerY == bombY[i]:
+#                              obstacleHitter = playerName
+#                              playerX -= 5
+#                              playerY -= 5
+#                              playerSpeed -= 0.1
 
 def generateTree (init):
      global treeImg, treeX, treeY, treeNum, playerX, playerY
@@ -437,6 +438,7 @@ def gameLoop():
      iterationNum = 0
      global width, height, grassTile, screen
      global playerX, playerY, enemyX, enemyY, playerSpeed, enemySpeed
+     global winnerName
      global playerHealth, hitDelay, menuTile, playerName, c
      running = True
      while running:
@@ -539,14 +541,14 @@ def gameLoop():
                playerHealth = 0
                screen.blit (endFont.render ("Game Over!", True, (163.6, 162.5, 162.5)), (width/10, height/2.5))
                screen.blit (endFont.render ("Score:" + str(score), True, (0, 0, 255)), (width/5, height/2))
-               playerName = "Enemy"
-               c.execute("INSERT OR REPLACE INTO Players VALUES (?, ?, ?)", (playerName, score, hardMode))
+               winnerName = "Enemy"
+               c.execute("INSERT OR REPLACE INTO Players VALUES (?, ?, ?)", (winnerName, score, hardMode))
                conn.commit()
                iterationNum = 0
           elif score == appleNum:
                screen.blit (endFont.render ("You Won!", True, (223.8, 225.7, 12.1)), (width/5, height/2.5))
                screen.blit (endFont.render ("Score:" + str(score), True, (0, 0, 255)), (width/5, height/2))
-               c.execute("INSERT OR REPLACE INTO Players VALUES (?, ?, ?)", (playerName, score, hardMode))
+               c.execute("INSERT OR REPLACE INTO Players VALUES (?, ?, ?)", (winnerName, score, hardMode))
                conn.commit()
                iterationNum = 0
           
@@ -568,7 +570,7 @@ def gameLoop():
 mainMenu()
 c.close()
 conn.close()
-if playerName != "Enemy":
+if winnerName != "Enemy":
      if score == 0:
           print ("You ate no apples.")
      elif score == 1:
