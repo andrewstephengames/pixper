@@ -49,7 +49,7 @@ The game is only available for Windows and Linux. A port for Android is planned.
 
 # Instructions for Linux
 * Open your favorite terminal emulator
-* `sudo apt install python3-pip` (Debian/Ubuntu - for other distros look up _$distroname install pip_)
+* `sudo apt install python3-pip` (Debian/Ubuntu - for other distros look up _distroname install pip_)
 * `pip install pygame pygame-menu`
 * `git clone https://github.com/andrewstephengames/pixper`
 * `python main.py`
@@ -66,8 +66,8 @@ The game is only available for Windows and Linux. A port for Android is planned.
 * **Enjoy!**
 
 # Background
-Because of the nature of the project, the codebase is very messy. **You have been warned.** The game was meant initially only for my computer science certification in high school, although at the recommendation of my teachers I modified it for some contests also.  As such, because of time limitations and because I had to study for the final exam in high school, I had to forgo any and all programming conventions that could have made my code at least half-readable.
+**Because of the nature of the project, the codebase is very messy. You have been warned.** The game was meant initially only for my computer science certification in high school, although at the recommendation of my teachers I modified it for some contests also.  As such, because of time limitations and because I had to study for the final exam in high school, I had to forgo any and all programming conventions that could have made my code at least half-readable.
 
 On that note, for one of the contests that was national, I forked my own project in order to translate it to French (I went to the French language section to guarantee at least 3rd place, and I got 2nd place) and also changed some of the assets in order to make it friendly for the contest's evaluation commission. The fork's name is [**pixper-fr**](https://github.com/andrewstephengames/pixper-fr).
 
-This project was made completely solo, including the textures, logic, database, menus, command-line functionality and distribution. **It ain't much but it's honest work**. Feel free to fork.
+This project was made completely solo, including the textures, logic, database, menus, command-line functionality, distribution and documentation. **It ain't much but it's honest work**. Feel free to fork.
