@@ -15,7 +15,7 @@ The game is only available for Windows and Linux. A port for Android is planned.
 * Go into the main directory
 * Run main.exe (in case Windows complains about the program being malicious, run anyway, the reason for such an error is that I have not purchased a certificate to verify this program with Microsoft - in case that sounds spooky to you - read the _Building on Windows_ instructions - you can "compile" a build of your own)
 * **Enjoy!**
-* **Building on Windows**
+# Building on Windows
 * Install Python: https://www.python.org/downloads/windows/
 * Install pip: https://pip.pypa.io/en/stable/installation/
 * Install git: https://gitforwindows.org/
@@ -40,7 +40,7 @@ The game is only available for Windows and Linux. A port for Android is planned.
 * `git clone https://github.com/andrewstephengames/pixper`
 * `python main.py`
 * **Enjoy!**
-* **Building on Linux**
+# Building on Linux
 * `pip install auto-py-to-exe`
 * `auto-py-to-exe`
 * For the script location select `_path where you cloned the repository_/pixper/`
