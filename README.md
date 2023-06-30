@@ -5,10 +5,26 @@
 The game is controlled entirely via WASD, although you can also use the key Q to quit. The project was made in Python using `pygame`, `pygame-menu` and `sqlite3`, in addition to the standard Python3 libraries.
 
 # Screenshots
-![init](./docs/images/init.png "Initial state") Game's Beginning
-![win](./docs/images/win.png "The Player won") The end of the game, in this case a win
-![menu](./docs/images/menu.png "The game's menu") The game's initial menu
-![stats](./docs/images/menu.png "The game stats") The game's stats submenu
+<img src="./docs/images/init.png" alt="Initial state" width="200" height="200"/>
+
+Game's beginning
+
+<img src="./docs/images/win.png" alt="Initial state" width="200" height="200"/>
+
+The end of the game, in this case a win
+
+<img src="./docs/images/menu.png" alt="Initial state" width="200" height="200"/>
+
+The game's initial menu
+
+<img src="./docs/images/menu.png" alt="Initial state" width="200" height="200"/>
+
+The game's stats submenu
+
+[//]: <> (![init]( "Initial state") Game's Beginning)
+[//]: <> (![win](./docs/images/win.png "The Player won") The end of the game, in this case a win)
+[//]: <> (![menu](./docs/images/menu.png "The game's menu") The game's initial menu)
+[//]: <> (![stats](./docs/images/menu.png "The game stats") The game's stats submenu)
 
 # How do I play?
 The game is only available for Windows and Linux. A port for Android is planned.
@@ -23,7 +39,7 @@ The game is only available for Windows and Linux. A port for Android is planned.
 * Install Python: https://www.python.org/downloads/windows/
 * Install pip: https://pip.pypa.io/en/stable/installation/
 * Install git: https://gitforwindows.org/
-* Open Powershell or Windows Terminal
+* Open Powershell or Windows Terminal, NOT cmd
 * `pip install pygame pygame-menu auto-py-to-exe`
 * Alternatively, run `py -m pip install pygame pygame-menu auto-py-to-exe`
 * `cd C:\Users\_your username_\Downloads`
