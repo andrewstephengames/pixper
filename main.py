@@ -211,7 +211,7 @@ def generateApple (init):
      global playerX, playerY, playerSpeed, score, width, height, playerHealth
      global randX, randY, randAppleX, randAppleY, playerName, conn, c
      if hardMode:
-          randX = 16
+          randX = 32
           randY = 64
      else:
           randX = 8
@@ -250,13 +250,15 @@ def generateGrass (init):
      else:
           for i in range (grassNum):
                screen.blit (grassTileImg[i], (grassTileX[i], grassTileY[i]))
+bombDmg = 5
 def generateBomb (init):
      global bombNum, bombImg, bombX, bombY, width, height, playerHealth
      global enemyX, enemyY, playerX, playerY, playerSpeed, enemySpeed
-     global bombTile, randX, randY, c, conn, playerName, enemyName
+     global bombTile, randX, randY, c, conn, playerName, enemyName, bombDmg
      if hardMode:
           randX = 48
           randY = 96
+          bombDmg = 10
      else:
           randX = 8
           randY = 32
@@ -276,8 +278,8 @@ def generateBomb (init):
                screen.blit (bombImg[i], (bombX[i], bombY[i]))
                if isCollision (playerX, playerY, bombX[i], bombY[i], 20):
                     if bombImg[i] != bombTile:
-                         playerHealth -= 10
-                         playerSpeed -= 0.5
+                         playerHealth -= bombDmg
+                         playerSpeed -= 0.75
                          obstacleHitter = playerName
                          screen.blit (bombTile, (bombX[i], bombY[i]))
                          RNG = (bombX[i]+bombY[i])/2
