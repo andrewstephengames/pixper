@@ -1,7 +1,6 @@
 # Introduction to Pixper
 **Pixper** is a 2D graphical game in which the objective is to collect all apples generated on a board resembling flatlands, while avoiding dangerous obstacles and entities.
 
-# Goal
 The game is controlled entirely via WASD, although you can also use the key Q to quit. The project was made in Python using `pygame`, `pygame-menu` and `sqlite3`, in addition to the standard Python3 libraries.
 
 # Screenshots
