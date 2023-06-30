@@ -5,26 +5,21 @@
 The game is controlled entirely via WASD, although you can also use the key Q to quit. The project was made in Python using `pygame`, `pygame-menu` and `sqlite3`, in addition to the standard Python3 libraries.
 
 # Screenshots
-<img src="./docs/images/init.png" alt="Initial state" width="200" height="200"/>
+<img src="./docs/images/init.png" alt="Initial state" width="400" height="312"/>
 
 Game's beginning
 
-<img src="./docs/images/win.png" alt="Initial state" width="200" height="200"/>
+<img src="./docs/images/win.png" alt="Initial state" width="400" height="312"/>
 
 The end of the game, in this case a win
 
-<img src="./docs/images/menu.png" alt="Initial state" width="200" height="200"/>
+<img src="./docs/images/menu.png" alt="Initial state" width="400" height="312"/>
 
 The game's initial menu
 
-<img src="./docs/images/menu.png" alt="Initial state" width="200" height="200"/>
+<img src="./docs/images/menu.png" alt="Initial state" width="400" height="312"/>
 
 The game's stats submenu
-
-[//]: <> (![init]( "Initial state") Game's Beginning)
-[//]: <> (![win](./docs/images/win.png "The Player won") The end of the game, in this case a win)
-[//]: <> (![menu](./docs/images/menu.png "The game's menu") The game's initial menu)
-[//]: <> (![stats](./docs/images/menu.png "The game stats") The game's stats submenu)
 
 # How do I play?
 The game is only available for Windows and Linux. A port for Android is planned.
